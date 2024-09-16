@@ -116,8 +116,6 @@ const borrarUsuario = async (req, res) => {
     const id = req.params.id;
 
     try{
-
-
         const usuarioDB = await Usuario.findById(id);
 
         if (!usuarioDB){
