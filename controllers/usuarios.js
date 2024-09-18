@@ -93,9 +93,16 @@ const actualizarUsuario = async (req, res = response) => {
             }
         }
 
-        campos.email = email;
+        if ( !ususarioDB.google ){
+            campos.email = email;
+        } else if (usuarioDB.email !== email){
+            return res.status(400).json({
+                ok: false,
+                msg: 'Los usuarios de google no pueden cambiar los usuarios.'
+            })
+        }
 
-        const usuarioActualizado = await Usuario.findByIdAndDelete( id, campos, { new: true } );
+        const usuarioActualizado = await Usuario.findByIdAndUpdate( id, campos, { new: true } );
 
         res.json({
             ok: true,

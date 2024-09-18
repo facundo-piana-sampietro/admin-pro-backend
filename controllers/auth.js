@@ -14,7 +14,7 @@ const login = async(req, res = response) => {
         //Verificar email
         const usuarioDB = await Usuario.findOne({ email });
 
-        if (!usuarioDB){
+        if (!usuarioDB || usuarioDB.google){
             return res.status(404).json({
                 ok: false,
                 msg: 'Email no encontrado.'
@@ -96,9 +96,12 @@ const renewToken = async(req, res = response) => {
     //Generar el TOKEN - JWT
     const token = await generarJWT(id);
 
+    const usuario = await Usuario.findById(id)
+
     res.json({
         ok: true,
-        token
+        token,
+        usuario
     })
 }
 
