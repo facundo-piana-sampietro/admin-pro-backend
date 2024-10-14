@@ -32,7 +32,7 @@ const login = async(req, res = response) => {
         }
 
         //Generar el TOKEN - JWT
-        const token = await generarJWT(usuarioDB.id);
+        const token = await generarJWT(usuarioDB._id);
 
         res.json({
             ok: true,
@@ -73,7 +73,7 @@ const googleSignIn = async(req, res = response) => {
         await usuario.save();
 
         //Generar el TOKEN - JWT
-        const token = await generarJWT(usuarioDB.id);
+        const token = await generarJWT(usuario._id);
 
         res.json({
             ok: true,
@@ -91,12 +91,12 @@ const googleSignIn = async(req, res = response) => {
 
 const renewToken = async(req, res = response) => {
     
-    const id = req.id
+    const _id = req._id
 
     //Generar el TOKEN - JWT
-    const token = await generarJWT(id);
+    const token = await generarJWT(_id);
 
-    const usuario = await Usuario.findById(id)
+    const usuario = await Usuario.findById(_id)
 
     res.json({
         ok: true,

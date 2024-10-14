@@ -1,1 +1,10 @@
 node_modules/
+
+/uploads/usuarios/*
+!/uploads/usuarios/.gitkeep
+
+/uploads/hospitales/*
+!/uploads/hospitales/.gitkeep
+
+/uploads/medicos/*
+!/uploads/medicos/.gitkeep

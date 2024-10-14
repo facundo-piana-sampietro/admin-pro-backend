@@ -20,7 +20,7 @@ const getUsuarios = async(req, res) => {
     res.json({
         ok: true,
         usuarios,
-        id: req.id,
+        _id: req._id,
         total
     });
 }
@@ -49,7 +49,7 @@ const crearUsuarios = async (req, res = response) => {
         await usuario.save();
 
         //Crear token JWT
-        const token = await generarJWT(usuario.id);
+        const token = await generarJWT(usuario._id);
 
         res.json({
             ok: true,
@@ -69,10 +69,10 @@ const crearUsuarios = async (req, res = response) => {
 }
 
 const actualizarUsuario = async (req, res = response) => {
-    const id = req.params.id
+    const _id = req.params.id
     
     try{
-        const usuarioDB = await Usuario.findById(id);
+        const usuarioDB = await Usuario.findById(_id);
         if (!usuarioDB){
             return res.status(400).json({
                 ok: false,
@@ -93,7 +93,7 @@ const actualizarUsuario = async (req, res = response) => {
             }
         }
 
-        if ( !ususarioDB.google ){
+        if ( !usuarioDB.google ){
             campos.email = email;
         } else if (usuarioDB.email !== email){
             return res.status(400).json({
@@ -102,7 +102,7 @@ const actualizarUsuario = async (req, res = response) => {
             })
         }
 
-        const usuarioActualizado = await Usuario.findByIdAndUpdate( id, campos, { new: true } );
+        const usuarioActualizado = await Usuario.findByIdAndUpdate( _id, campos, { new: true } );
 
         res.json({
             ok: true,
@@ -120,18 +120,18 @@ const actualizarUsuario = async (req, res = response) => {
 
 const borrarUsuario = async (req, res) => {
     
-    const id = req.params.id;
+    const _id = req.params.id;
 
     try{
-        const usuarioDB = await Usuario.findById(id);
+        const usuarioDB = await Usuario.findById(_id);
 
         if (!usuarioDB){
             return res.status(400).json({
                 ok: false,
-                msg: 'No existe un usuario con ese id'
+                msg: 'No existe un usuario con ese _id'
             })
         }
-        await Usuario.findByIdAndDelete( id );
+        await Usuario.findByIdAndDelete( _id );
 
         res.json({
             ok: true,

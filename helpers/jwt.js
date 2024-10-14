@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken')
 
-const generarJWT = ( id ) => {
+const generarJWT = ( _id ) => {
 
     return new Promise( (resolve, reject)  => {
         
         const payload = {
-            id // esto es lo mismo que id: id pero, como la propiedad es igual a la variable, se pone asi
+            _id // esto es lo mismo que _id: _id pero, como la propiedad es igual a la variable, se pone asi
         }
 
         jwt.sign( payload, process.env.JWT_SECRET, {

@@ -1,22 +1,44 @@
 const { response } = require('express')
 const Hospital = require('../models/hospital');
 
-const getHospitales = async(req, res = response) => {
-    
-    const hospitales = await Hospital.find()
-                            .populate('usuario', 'nombre img')
+const getHospitalesPaginado = async(req, res = response) => {
 
+    const desde = Number(req.query.desde)
+
+    const [hospitales, total] = await Promise.all([
+        
+        Hospital.find()
+            .populate('usuario', 'nombre img')
+            .skip(desde)
+            .limit( 5 ),
+            
+        Hospital.countDocuments()
+    ])
+                    
+
+    res.json({
+        ok: true,
+        hospitales,
+        total
+    })
+}
+
+const getHospitales = async(req, res = response) => {
+    const hospitales = await  Hospital.find()
+                        .populate('usuario', 'nombre img')
+                        
     res.json({
         ok: true,
         hospitales
     })
 }
 
+
 const crearHospital = async(req, res = response) => {
 
-    const id = req.id;
+    const _id = req._id;
     const hospital = new Hospital ({
-        usuario: id,
+        usuario: _id,
         ...req.body
     });
 
@@ -39,11 +61,11 @@ const crearHospital = async(req, res = response) => {
 
 const actualizarHospital = async(req, res = response) => {
 
-    const id = req.params.id
-    const idUser = req.id
+    const _id = req.params.id
+    const idUser = req._id
 
     try {
-        const hospital = await Hospital.findById(id);
+        const hospital = await Hospital.findById(_id);
 
         if (!hospital){
             return res.status(404).json({
@@ -58,7 +80,7 @@ const actualizarHospital = async(req, res = response) => {
             usuario: idUser
         }
 
-        const hospitalActualizado = await Hospital.findByIdAndUpdate(id,cambiosHospital, {new: true} );
+        const hospitalActualizado = await Hospital.findByIdAndUpdate(_id,cambiosHospital, {new: true} );
         
         res.json({
             ok: true,
@@ -77,10 +99,10 @@ const actualizarHospital = async(req, res = response) => {
 
 const borrarHospital = async(req, res) => {
 
-    const id = req.params.id;
+    const _id = req.params.id;
 
     try {
-        const hospital = await Hospital.findById(id); 
+        const hospital = await Hospital.findById(_id); 
 
         if (!hospital){
             return res.status(404).json({
@@ -89,9 +111,9 @@ const borrarHospital = async(req, res) => {
             }) 
         }
 
-        await Hospital.findByIdAndDelete(id);
+        await Hospital.findByIdAndDelete(_id);
 
-        res.status(500).json({
+        res.json({
             ok: false,
             msg: 'Hospital eliminado'
         }) 
@@ -106,6 +128,7 @@ const borrarHospital = async(req, res) => {
 
 module.exports = {
     getHospitales,
+    getHospitalesPaginado,
     crearHospital,
     actualizarHospital,
     borrarHospital,
