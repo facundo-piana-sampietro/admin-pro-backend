@@ -2,6 +2,7 @@ const { response } = require('express')
 const bcrypt = require('bcryptjs')
 const Usuario = require('../models/usuario');
 const { generarJWT } = require('../helpers/jwt');
+const { getMenuFrontEnd } = require('../helpers/menu-frontend')
 
 
 const getUsuarios = async(req, res) => {
@@ -54,7 +55,8 @@ const crearUsuarios = async (req, res = response) => {
         res.json({
             ok: true,
             usuario,
-            token
+            token,
+            menu: getMenuFrontEnd( usuarioDB.role )
         });
 
     } catch (error){

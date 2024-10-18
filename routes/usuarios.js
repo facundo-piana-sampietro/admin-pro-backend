@@ -5,7 +5,7 @@ const { Router } = require('express');
 const { check } = require('express-validator')
 const { getUsuarios, crearUsuarios, actualizarUsuario, borrarUsuario } = require('../controllers/usuarios')
 const { validarCampos } = require('../middlewares/validar-campos');
-const { validarJWT } = require('../middlewares/validar-jwt');
+const { validarJWT, validarADMIN_ROLE, validarAdminRoleOMismoUsuario } = require('../middlewares/validar-jwt');
 
 const router = Router();
 
@@ -25,6 +25,7 @@ router.post( '/',
 router.put( '/:id',
     [
         validarJWT, //--> Va primero para que no valide toda una request en vano si no esta autenticado.
+        validarAdminRoleOMismoUsuario,
         check('nombre', 'El nombre es obligatorio').not().isEmpty(),
         check('role', 'El role es obligatorio').not().isEmpty(),
         check('email', 'El email es obligatorio').isEmail(),
@@ -33,6 +34,6 @@ router.put( '/:id',
     actualizarUsuario
 );
 
-router.delete( '/:id', validarJWT, borrarUsuario);
+router.delete( '/:id', [validarJWT, validarADMIN_ROLE], borrarUsuario);
 
 module.exports = router;
